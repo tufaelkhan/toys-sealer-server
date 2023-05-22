@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const toyCollection = client.db('seller').collection('toys')
 
@@ -43,7 +43,7 @@ async function run() {
     //add toys
 
     app.get('/toys', async (req, res) => {
-      const cursor = toyCollection.find().limit(20)
+      const cursor = toyCollection.find().sort({price: 1}).limit(20)
       const result = await cursor.toArray()
       res.send(result)
     })
@@ -63,7 +63,7 @@ async function run() {
       if (req.query?.email) {
         query = { email: req.query.email }
       }
-      const result = await toyCollection.find(query).toArray()
+      const result = await toyCollection.find(query).sort({price: 1}).toArray()
       res.send(result)
     })
 
@@ -76,7 +76,7 @@ async function run() {
 
     app.post('/toys', async (req, res) => {
       const newToys = req.body;
-      console.log(newToys);
+      // console.log(newToys);
       const result = await toyCollection.insertOne(newToys)
       res.send(result)
     })
@@ -95,7 +95,7 @@ async function run() {
         }
       }
       const result = await toyCollection.updateOne(filter, toysData, options)
-      console.log(toysData);
+      // console.log(toysData);
       res.send(result)
     })
 
