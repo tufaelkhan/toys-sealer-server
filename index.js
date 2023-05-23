@@ -74,6 +74,23 @@ async function run() {
       res.send(result)
     })
 
+    //search implementaion
+    const indexKeys = {name: 1, seller: 1}
+    const indexOptions = {name: 'toyName'}
+
+    const result = await toyCollection.createIndex(indexKeys, indexOptions)
+
+    app.get('/toyname/:text', async(req, res) =>{
+      const searchToy = req.params.id
+      const result = await toyCollection.find({
+        $or: [
+          {name: {$regex: searchToy, $options: 'i'}},
+          {seller: { $regex: searchToy, $options: 'i'}}
+        ]
+      }).toArray()
+      res.send(result)
+    })
+
     app.post('/toys', async (req, res) => {
       const newToys = req.body;
       // console.log(newToys);
